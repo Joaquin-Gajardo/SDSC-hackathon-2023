@@ -26,7 +26,8 @@ dependencies = [
   "diffusers",
   "accelerate",
   "transformers",
-  "opencv-python"
+  "opencv-python",
+  "pycocotools"
 ]
 [build-system]
 requires = ["flit_core>=3.4"]
