@@ -11,16 +11,17 @@ from torch.utils.data import Dataset, DataLoader
 
 from src import ROOT_DIR
 
-root_data_dir = ROOT_DIR / 'data' / 'raw'
 
-dataset = 'mixed' # 'mixed' (bboxes), 'bildacher' (masks)
-dataset_dir = root_data_dir / dataset 
+root_data_dir = ROOT_DIR / 'data' / 'raw'
+#dataset = 'mixed' # 'mixed' (bboxes), 'bildacher' (masks)
 
 class MixedDataset(Dataset):
+    
     dataset = 'mixed'
 
-    def __init__(self, transforms = None):
+    def __init__(self):
         super().__init__()
+        
         self.dataset_dir = root_data_dir / self.dataset
         self.images_dir = self.dataset_dir / 'images'
         self.images = sorted(os.listdir(self.images_dir))    
@@ -29,19 +30,15 @@ class MixedDataset(Dataset):
         self.transforms = Compose([
             ToTensor(),
         ])
+        
+    def __len__(self):
+        return len(self.images)
 
     def __getitem__(self, idx):
         image_path = self.images_dir / self.images[idx]
-        # with open(image_path, 'rb') as img:
-        #     image = f()
-        if self.transforms is not None:
-            if isinstance(tensor, list):
-                tensor = [self.transforms(x) for x in tensor]
-            else:
-                tensor = self.transforms(tensor)
+        image = Image.open(image_path)
+        image = self.transforms(image)
         
         return image
     
-    def __len__(self):
-        return len(self.images)
     
