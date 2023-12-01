@@ -10,10 +10,10 @@ from tqdm import tqdm
 
 from src import ROOT_DIR
 from src.utils import (
-    is_bbox_outside_crop,
     get_patch_label,
     unpack_yolo_label,
     yolo_bbox_relative_to_absolute_coords,
+    yolo_bbox_min_max_coords,
     )
 
 
@@ -52,32 +52,64 @@ class MixedDatasetPreprocessing(Dataset):
         
         # Discard labels outside crop boundaries and update images, labels and patches attributes accordingly (only 9 so we just discard them)
         self._patches = self.patches # save before discarding
+        self.new_labels = [] # dirty hack
         if center_crop:
             self.patches_idxs_to_discard = self._patches_idxs_to_discard() # NOTE: requires iterating over the dataset
             self.images = [path for i, path in enumerate(self.images) if i not in self.patches_idxs_to_discard]
             self.labels = [path for i, path in enumerate(self.labels) if i not in self.patches_idxs_to_discard]
             self.patches = [path for i, path in enumerate(self.patches) if i not in self.patches_idxs_to_discard]
+            self.new_labels = [new_label for i, new_label in enumerate(self.new_labels) if i not in self.patches_idxs_to_discard]
 
             # Now we can apply center crop form now on
             self.transforms.transforms.insert(len(self.transforms.transforms), CenterCrop(OUT_IMAGE_RES))
 
+    def is_bbox_outside_crop(self, x, y, w, h, W, H, crop_size):
+        """
+        Returns True if any point of the bounding box is outside the crop boundaries, otherwise False. Expects absolute coordinates.
+        """
+        # Calculate bounding box coordinates
+        bbox_x_min, bbox_x_max, bbox_y_min, bbox_y_max = yolo_bbox_min_max_coords(x, y, w, h)
+
+        # Calculate crop boundaries
+        crop_left = (W - crop_size) / 2
+        crop_top = (H - crop_size) / 2
+        crop_right = crop_left + crop_size
+        crop_bottom = crop_top + crop_size
+        a = crop_left
+        b = crop_top
+        x_new = x - a
+        y_new = y - b
+        x_new = x_new / OUT_IMAGE_RES
+        y_new = y_new / OUT_IMAGE_RES
+        w_new = w / OUT_IMAGE_RES
+        h_new = h / OUT_IMAGE_RES
+        self.new_labels.append([0, x_new, y_new, w_new, h_new])
+
+        # Check if any bounding box coordinate is outside the crop boundaries
+        if bbox_x_min < crop_left or bbox_x_max > crop_right or bbox_y_min < crop_top or bbox_y_max > crop_bottom:
+            return True  # Bounding box is partially or fully outside the crop
+        else:
+            return False  # Bounding box is completely inside the crop
+        
     def _patches_idxs_to_discard(self):
         """Rerturns a list of indexes of the patches ((bboxes) that fall outside the crop boundaries.
         This can be later also used for augmentation as well as the train set, only val set would be exluded."""
         patches_to_discard = []
         for i in range(len(self)):
-            image, label, patch = self[i]
+            output = self[i]
+            image = output[0]
+            label = output[1]
+            patch = output[2]
             
             # There are more than one bbox per image, we need to find which one is the one that we see in the patch
             # Finding closest match by patch size:  
-            patch_height, patch_width = pil_to_tensor(patch).shape[1:]
             H, W = image.shape[1], image.shape[2]
             label_match = get_patch_label(image, label, patch)
             
             ## BBox coordinates
             x, y, w, h = unpack_yolo_label(label_match)
             x, y, w, h = yolo_bbox_relative_to_absolute_coords(x, y, w, h, W, H)
-            if is_bbox_outside_crop(x, y, w, h, W, H, OUT_IMAGE_RES):
+            if self.is_bbox_outside_crop(x, y, w, h, W, H, OUT_IMAGE_RES):
                 patches_to_discard.append(i)
                 
         return patches_to_discard
@@ -96,18 +128,22 @@ class MixedDatasetPreprocessing(Dataset):
         return [path for path in self.patches if not Path(path).exists()]
         
     def __len__(self):
-        assert len(self.images) == len(self.labels) == len(self.patches)
+        assert len(self.images) == len(self.labels) == len(self.patches), 'Number of images, labels and patches files should be equal'
         return len(self.images)
 
     def __getitem__(self, idx):
         image = Image.open(self.images[idx])
         label = np.loadtxt(self.labels[idx])
         patch = Image.open(self.patches[idx])
-        
         # Apply transforms to images
         image = self.transforms(image)
 
-        return image, label, patch
+        if len(self.new_labels) >= len(self):
+            new_label = self.new_labels[idx]
+            new_label = self.new_labels[idx]
+            return image, label, patch, new_label
+        else:
+            return image, label, patch
     
     
 class BildacherBackgroundDataset(Dataset):

@@ -37,25 +37,6 @@ def yolo_bbox_min_max_coords(x, y, w, h):
     y_min = y - h // 2
     y_max = y + h // 2
     return x_min, x_max, y_min, y_max
-
-def is_bbox_outside_crop(x, y, w, h, W, H, crop_size):
-    """
-    Returns True if any point of the bounding box is outside the crop boundaries, otherwise False. Expects absolute coordinates.
-    """
-    # Calculate bounding box coordinates
-    bbox_x_min, bbox_x_max, bbox_y_min, bbox_y_max = yolo_bbox_min_max_coords(x, y, w, h)
-
-    # Calculate crop boundaries
-    crop_left = (W - crop_size) / 2
-    crop_top = (H - crop_size) / 2
-    crop_right = crop_left + crop_size
-    crop_bottom = crop_top + crop_size
-
-    # Check if any bounding box coordinate is outside the crop boundaries
-    if bbox_x_min < crop_left or bbox_x_max > crop_right or bbox_y_min < crop_top or bbox_y_max > crop_bottom:
-        return True  # Bounding box is partially or fully outside the crop
-    else:
-        return False  # Bounding box is completely inside the crop
     
 def get_patch_label(image: torch.Tensor, label: torch.Tensor, patch: Image) -> np.array:
     """Finds the most similar label to the patch by comparing their sizes."""
