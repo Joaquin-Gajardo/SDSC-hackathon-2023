@@ -19,6 +19,8 @@ from src.utils import (
 
 DATA_DIR = ROOT_DIR / 'data' / 'raw'
 OUT_IMAGE_RES = 1280
+TRAIN_VAL_SPLIT = 0.8
+SEED = 42
 
 
 class MixedDatasetPreprocessing(Dataset):
