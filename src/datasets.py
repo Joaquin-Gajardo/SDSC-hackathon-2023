@@ -51,6 +51,7 @@ class MixedDatasetPreprocessing(Dataset):
         self.transforms = Compose([ToTensor()])
         
         # Discard labels outside crop boundaries and update images, labels and patches attributes accordingly (only 9 so we just discard them)
+        self._patches = self.patches # save before discarding
         if center_crop:
             self.patches_idxs_to_discard = self._patches_idxs_to_discard() # NOTE: requires iterating over the dataset
             self.images = [path for i, path in enumerate(self.images) if i not in self.patches_idxs_to_discard]
