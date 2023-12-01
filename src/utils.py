@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
 import torch
-from torchvision.transforms.functional import center_crop
+from torchvision.transforms.functional import center_crop, pil_to_tensor
 
 
 def plot_tensor(image_tensor):
@@ -40,7 +40,7 @@ def yolo_bbox_min_max_coords(x, y, w, h):
 
 def is_bbox_outside_crop(x, y, w, h, W, H, crop_size):
     """
-    Returns True if any point of the bounding box is outside the crop boundaries, otherwise False
+    Returns True if any point of the bounding box is outside the crop boundaries, otherwise False. Expects absolute coordinates.
     """
     # Calculate bounding box coordinates
     bbox_x_min, bbox_x_max, bbox_y_min, bbox_y_max = yolo_bbox_min_max_coords(x, y, w, h)
@@ -59,7 +59,9 @@ def is_bbox_outside_crop(x, y, w, h, W, H, crop_size):
     
 def get_patch_label(image: torch.Tensor, label: torch.Tensor, patch: Image) -> np.array:
     """Finds the most similar label to the patch by comparing their sizes."""
+    
     patch_height, patch_width = pil_to_tensor(patch).shape[1:]
+    H, W = image.shape[1], image.shape[2]
 
     if label.ndim == 1: # make those with a single bbox 2D so we can do same for loop for all labels
         label = label[np.newaxis, :]
