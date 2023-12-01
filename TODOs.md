@@ -1,7 +1,7 @@
 ## Common
 - [ ] Split `mixed` (1408x2048 images) dataset in 80%/20% train and val, and create pytorch datasets that return annotation with corresponding patch (patches are from more datasets than just `mixed` so need to use the annotation to find the correct patches). Cut CenterCrop of siue 1280x1280 for yolo.
 - [ ] Precalculate RGB mean and std for `mixed` dataset train split
-- [ ] Loader for `bildacher` no object images (2730x4093 images) for background, CenterCrop to 1280x1280
+- [x] Loader for `bildacher` no object images (2730x4093 images) for background, CenterCrop to 1280x1280
 
 ## Baseline
 - [ ] Create baseline object detection model, train on `mixed` dataset train split and test on the test split (https://learnopencv.com/train-yolov8-on-custom-dataset/)
