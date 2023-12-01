@@ -13,6 +13,7 @@ from src import ROOT_DIR
 
 
 DATA_DIR = ROOT_DIR / 'data' / 'raw'
+OUT_IMAGE_RES = 1280
 
 
 class MixedDataset(Dataset):
@@ -48,7 +49,7 @@ class MixedDataset(Dataset):
         # Define transforms
         self.transforms = Compose([
             ToTensor(),
-            #CenterCrop(1280), # NOTE: If doing this we would need to exclude labels and patches that fall outside the crop
+            #CenterCrop(OUT_IMAGE_RES), # NOTE: If doing this we would need to exclude labels and patches that fall outside the crop
         ])
 
     def get_missing_patches(self):
@@ -86,7 +87,7 @@ class BildacherBackgroundDataset(Dataset):
         # Define transforms
         self.transforms = Compose([
             ToTensor(),
-            CenterCrop(1280), # NOTE: when doing this remember to do this for MixedDataset as well so their images have the same size
+            CenterCrop(OUT_IMAGE_RES), # NOTE: when doing this remember to do this for MixedDataset as well so their images have the same size
         ])
 
     def __len(self):
