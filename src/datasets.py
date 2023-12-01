@@ -139,8 +139,7 @@ class MixedDatasetPreprocessing(Dataset):
         image = self.transforms(image)
 
         if len(self.new_labels) >= len(self):
-            new_label = self.new_labels[idx]
-            new_label = self.new_labels[idx]
+            new_label = np.array(self.new_labels[idx])
             return image, label, patch, new_label
         else:
             return image, label, patch

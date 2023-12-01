@@ -1,8 +1,29 @@
-# Alpine-Aster:
-Project: MoreWeeds
+# Alpine-Aster: MoreWeeds
+Our project looks for leveraring generative AI for synthetizing data to ease the burder of the current extensive data collection necessary in agriculture. We focus on the problem of weed detection, whereby were localizing weeds with a drone is being done with object detection and semantic segmentation approaches for weed detection and subsequent killing with robots.
+
+We prepare a demo dataset and trained a yolov8 model as a baseline.
+
+We explored two ideas for data augmentation:
+- Stable diffusion inpainting to blend in some weeds patches extracted with existing bounding boxes labels, into a background image where annotators have not seen weeds.
+- GANs to generate new synthetic weeds images and to a similar process from above but without inpaitining.
 
 ## Setup
+```
+conda create -n hackathon python=3.11
 conda activate hackathon
+pip install -e .
+```
+## Prepare the data
+Running this [notebook](./notebook/prepare_data/pytorch_datasets_dev.ipynb)
 
-## Update environment
-Modify pyproject.toml and then run pip install -e . on the environment
+## Running the code
+Train baseline:
+```
+python src/train.py
+```
+Augmented training with synthetic dataset:
+- [GAN training and data synthesis notebook](./train_gan.ipynb)
+
+- [stable-diffusion-inpainting notebook](./notebook/eda/Image_Blending_Inpainting_2.ipynb)
+
+
