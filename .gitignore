@@ -1,4 +1,6 @@
 data
 test_data
 notebook/runs/
+notebook/prepare_data/runs/
+yolov5
 __pycache__
