@@ -1,0 +1,35 @@
+[project]
+name = "src"
+version = "0.0.1"
+authors = [
+  { name = "Joaquin Gajardo", email = "joaquin.gajardocastillo@ethz.ch" },
+]
+readme = "README.md"
+description = ""
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+license = { file = "LICENSE" }
+dependencies = [
+  # Other dependencies are already installed through fipdata
+  "scipy",
+  "torch",
+  "matplotlib",
+  "jupyterlab",
+  "ipykernel",
+  "tqdm",
+  "pytorch-lightning",
+  "wandb",
+  "diffusers",
+  "accelerate",
+  "transformers",
+  "opencv-python",
+  "pycocotools",
+  "scikit-learn",
+]
+[build-system]
+requires = ["flit_core>=3.4"]
+build-backend = "flit_core.buildapi"
