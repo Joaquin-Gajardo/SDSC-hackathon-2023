@@ -25,13 +25,14 @@ Augmented training with synthetic dataset:
    1. [GAN training and data synthesis notebook](./train_gan.ipynb)
    2. [stable-diffusion-inpainting notebook](./notebook/eda/Image_Blending_Inpainting_2.ipynb)
 
-## Results
-- GANs:
-  
+## Results (WIP synthetic dataset)
+- Stable diffusion inpainting:
+
+    ![Stable diffusion inpainting](./results/inpainting/Overlay_HuggingFace_Inpaint_difficult.png)
+
+- GANs training:
+    
     ![GANs](./results/gans/gan64.gif)
 
-- Stable diffusion inpainting:
-  
-    ![Stable diffusion inpainting](./results/inpainting/Overlay_HuggingFace_Inpaint_difficult.png)
 
 
