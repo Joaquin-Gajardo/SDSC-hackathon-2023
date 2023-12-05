@@ -1,6 +1,0 @@
-train: /home/azureuser/Alpine-Aster/data/raw/bildacher/images  
-val: /home/azureuser/Alpine-Aster/data/raw/bildacher/images 
-
-
-nc: 1  # number of classes
-names: ['rumex']  # class names
