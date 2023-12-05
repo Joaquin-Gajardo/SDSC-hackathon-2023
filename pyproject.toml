@@ -3,6 +3,9 @@ name = "src"
 version = "0.0.1"
 authors = [
   { name = "Joaquin Gajardo", email = "joaquin.gajardocastillo@ethz.ch" },
+  { name = "Hassan Nasser", email = "roland.nasser@agroscope.admin.ch" },
+  { name = "Lucas Chizzali", email = "lucas.chizzali@sdsc.ethz.ch" },
+  { name = "Cristina Pascual ", email = "cristinapascualvsl@gmail.com" },
 ]
 readme = "README.md"
 description = ""
